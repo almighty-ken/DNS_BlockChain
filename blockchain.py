@@ -108,9 +108,12 @@ class Blockchain(object):
 
 		:param transaction: the new transaction we are appending
 		:return: The index of the Block that will hold this transaction
+		UPDATE
+		:return: The number of transactions in current_transaction
 		"""
 		self.current_transactions.append(transaction)
-		return self.last_block['index']+1
+		# return self.last_block['index']+1
+		return len(self.current_transactions)
 
 	def new_block(self,proof,previous_hash):
         """
