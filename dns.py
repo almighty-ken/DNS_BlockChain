@@ -31,6 +31,35 @@ class dns_layer(object):
 					return (transaction['ip'],transaction['port'])
 		raise LookupError('No existing entry matching hostname')
 
+	def mine_block(self):
+		"""
+		here we assume only the node will full buffer will mine
+		once finish mining, broadcast resolve to every node
+		all other node add new block but keep buffer
+		"""
+		last_block = blockchain.last_block
+		last_proof = last_block['proof']
+		proof = blockchain.proof_of_work(last_proof)
+
+		# Forge the new Block by adding it to the chain
+		previous_hash = blockchain.hash(last_block)
+		block = blockchain.new_block(proof, previous_hash)
+
+		# broadcast request for all neighbor to resolve conflict
+
+	def broadcast_new_block(self):
+		"""
+		Broadcast resolve request to all neighbor to force neighbors
+		update their chain
+		"""
+		neighbors = self.blockchain.nodes
+
+		for node in neighbors:
+			response = requests.get(f'http://{node}/blockchain/resolve')
+
+			if response.status_code != 200:
+				raise ValueError(f'Node {node} responded bad status code')
+
 	def new_entry(self,hostname,ip,port):
 		"""
 		Adds new entry into current transactions in the blockchain.
@@ -46,14 +75,8 @@ class dns_layer(object):
 		}
 		buffer_len = blockchain.new_transaction(new_transaction)
 		if buffer_len > BUFFER_MAX_LEN:
-			# mine new block
-			"""
-			here we assume only the node will full buffer will mine
-			once finish mining, broadcast new block to every node
-			all other node add new block but keep buffer
-			"""
-			TODO
-		
+			self.mine_block()
+			
 
 
 
