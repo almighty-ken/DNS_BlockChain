@@ -4,7 +4,11 @@
 
 ### TODO
 1. A tutorial on how to install and run this. Supply a sample use case of the system
+	- COMPLETED
 2. support of `nslookup` and actual DNS packets
+	- using `dnslib`, the dns server thread also has access to the `dns_layer` instance and is thus able to use the function lookup to construct replies.
+	- the `resolver` class that is passed into the `udp_resolver` class will utilize the `dns_layer` to do actual lookup.
+	- as of a proof of concept, this will not be implemented.
 
 ### Abstract
 DNS service is the perfect candidate for applications of blockchain. DNS requires multiple servers to reach a consensus on the mapping from the domain namespace to the IP namespace. Moreover, DNS servers are often under DDoS attacks, as there are not many publicly trusted servers and each server is already under heavy traffic. Using a blockchain powered network of DNS servers solves all these problems. Each server automatically reaches a consensus of mapping by maintaining exact replicas of the ledger, which is a chain of all the records of mapping entries. Users can trust any node in the network by requesting a proof of work on the blockchain and comparing it with the other nodes, and this allows better load balancing.
