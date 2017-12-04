@@ -2,6 +2,7 @@ from flask import Flask, jsonify, request
 import json
 import dns
 from uuid import uuid4
+import threading
 
 """
 This layer takes care of DNS request and reponse packets
@@ -85,7 +86,7 @@ def dns_lookup():
 		'ip':host,
 		'port': port
 		}
-		return_code = 201
+		return_code = 200
 	except LookupError:
 		response = "No existing entry"
 		return_code = 401
@@ -98,20 +99,21 @@ def consensus():
 	triggers the blockchain to check chain against other neighbors'
 	chain, and uses the longest chain to achieve consensus
 	"""
-	replaced = dns_resolver.blockchain.resolve_conflicts()
+	t = threading.Thread(target=dns_resolver.blockchain.resolve_conflicts)
+	t.start()
 
-	if replaced:
-		response = {
-			'message': 'Our chain was replaced',
-			'new_chain': dns_resolver.dump_chain()
-		}
-	else:
-		response = {
-			'message': 'Our chain is authoritative',
-			'chain': dns_resolver.dump_chain()
-		}
+	# if replaced:
+	# 	response = {
+	# 		'message': 'Our chain was replaced',
+	# 		'new_chain': dns_resolver.dump_chain()
+	# 	}
+	# else:
+	# 	response = {
+	# 		'message': 'Our chain is authoritative',
+	# 		'chain': dns_resolver.dump_chain()
+	# 	}
 
-	return jsonify(response), 200
+	return jsonify(None), 200
 
 @app.route('/debug/dump_chain',methods=['GET'])
 @app.route('/nodes/chain',methods=['GET'])

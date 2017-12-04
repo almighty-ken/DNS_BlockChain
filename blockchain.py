@@ -59,7 +59,7 @@ class Blockchain(object):
 			for transaction in block['transactions']:
 				if 'node' in transaction and transaction['node']==self.node_identifier:
 					quota += transaction['reward']
-				if own_block:
+				elif own_block:
 					quota -= 1
 		return quota
 
@@ -180,7 +180,9 @@ class Blockchain(object):
 
 		# Grab and verify the chains from all the nodes in our network
 		for node in neighbours:
-			response = requests.get(f'http://{node}/nodes/chain')
+			node_addr = f'http://{node}/nodes/chain'
+			# print(node_addr)
+			response = requests.get(node_addr)
 
 			if response.status_code == 200:
 				length = response.json()['length']

@@ -2,6 +2,10 @@
 ## Ken Cheng
 ## Nov. 2017
 
+### TODO
+1. A tutorial on how to install and run this. Supply a sample use case of the system
+2. support of `nslookup` and actual DNS packets
+
 ### Abstract
 DNS service is the perfect candidate for applications of blockchain. DNS requires multiple servers to reach a consensus on the mapping from the domain namespace to the IP namespace. Moreover, DNS servers are often under DDoS attacks, as there are not many publicly trusted servers and each server is already under heavy traffic. Using a blockchain powered network of DNS servers solves all these problems. Each server automatically reaches a consensus of mapping by maintaining exact replicas of the ledger, which is a chain of all the records of mapping entries. Users can trust any node in the network by requesting a proof of work on the blockchain and comparing it with the other nodes, and this allows better load balancing.
 

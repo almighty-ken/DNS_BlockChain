@@ -32,7 +32,8 @@ class dns_layer(object):
 		for block in self.blockchain.chain:
 			transactions = block['transactions']
 			for transaction in transactions:
-				if transaction['hostname'] == hostname:
+				# print(transaction)
+				if 'hostname' in transaction and transaction['hostname'] == hostname:
 					return (transaction['ip'],transaction['port'])
 		raise LookupError('No existing entry matching hostname')
 
@@ -72,10 +73,11 @@ class dns_layer(object):
 		for node in neighbors:
 			print(f"Requesting {node} to resolve")
 			response = requests.get(f'http://{node}/nodes/resolve')
+			# if response.status_code != 200:
+			# 	raise ValueError(f'Node {node} responded bad status code')
+			# print(f"{node} resolve completed")
 
-			if response.status_code != 200:
-				raise ValueError(f'Node {node} responded bad status code')
-			print(f"{node} resolve completed")
+		print("Broadcast Complete")
 
 	def new_entry(self,hostname,ip,port):
 		"""
@@ -91,7 +93,7 @@ class dns_layer(object):
 		'port':port
 		}
 		buffer_len = self.blockchain.new_transaction(new_transaction)
-		if buffer_len >= self.BUFFER_MAX_LEN or buffer_len == self.blockchain.quota:
+		if buffer_len >= self.BUFFER_MAX_LEN or buffer_len >= self.blockchain.quota-self.BUFFER_MAX_LEN:
 			self.mine_block()
 			
 	def dump_chain(self):
